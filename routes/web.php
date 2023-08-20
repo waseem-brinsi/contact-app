@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 use PhpParser\Node\Stmt\Return_;
 
@@ -14,49 +15,33 @@ use PhpParser\Node\Stmt\Return_;
 |
 */
 
- function getContacts()
-{
-   return     [
-    1 => ['name'=>'wassim','phone'=>'123454678'],
-    2 => ['name'=>'chadi','phone'=>'123454678'],
-    3 => ['name'=>'wajdi','phone'=>'123454678'],
-];
-}
 
 
 
-Route::get('/', function () {
 
-    return view('welcome');
-});
+Route::get('/',welcomeController::class);
+Route::get('/contacts',[contactController::class,'index'])->name('contacts.index');
+Route::get('/contacts/create',[contactController::class,'create'])->name('contacts.create');
+Route::get('/contacts/{id}',[contactController::class,'show'])->whereNumber('id')->name('contacts.show');
 
-Route::get('/contacts',function(){
-    $companies = [
-        1=>["name"=>"Company One","contact"=>3],
-        2=>["name"=>"Company Tow","contact"=>7],
-        3=>["name"=>"Company Three","contact"=>9]
-    ];
+Route::resources([
+    '/tag'=> TagController::class,
+    '/task'=> TaskController::class
+]);
 
-    $contacts = getContacts();
-    dump($contacts,$companies);
-    return view('contacts.index')
-                                ->with('contacts',$contacts)
-                                ->with('companies',$companies);
-})->name('contacts.index');
+Route::resource('/Activities',ActivityController::class)->except([
+    'index','show']
+);
 
 
 
-Route::get('/contacts/create',function(){
-    return view('contacts.create');
-})->name('contacts.create');
 
-Route::get('/contacts/{id}',function($id){
-    $contacts = getContacts();
-    abort_unless(isset($contacts[$id]),404);
-    $contact = $contacts[$id];
-    dump($contact);
-    return view('contacts.show')->with('contact',$contact) ;
-})->whereNumber('id')->name('contacts.show');
+
+
+
+
+
+
 
 Route::get('/companies/{name?}',function($Name=null){
     if ($Name) {
@@ -70,6 +55,8 @@ Route::get('/companies/{name?}',function($Name=null){
 Route::get('/edit',function(){
     return view('contacts.edit');
 })->name('contacts.edit');
+
+
 
 
 
