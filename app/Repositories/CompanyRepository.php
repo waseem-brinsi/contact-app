@@ -1,17 +1,15 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Company;
+
 class CompanyRepository
 {
 
-    public function plunk()
+    public function pluck()
     {
-        return  [
-            "google",
-            "Tesla",
-            "Meta",
-        ];
-
+        // return  Company::orderBy('name')->pluck('name','id');
+        return  Company::all();
     }
 
 }
